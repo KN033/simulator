@@ -35,10 +35,10 @@ class Screens:
             self.Screen.blit(titleText,titleRect)
   
             # startText=get_font(33).render("Start",True,(255,255,255))#(255,255,255) white #self, image, pos, text_input, font, base_color, hovering_color young green
-            startButton = Button(pos=(640, 660),text_input="Start",font=self.get_font(44),base_color=(255, 255, 255),hovering_color=(100, 149, 237))
+            startButton = Button(pos=(640, 660),text_input="Start",font=self.get_font(44),base_color=(255, 255, 255),hovering_color=(255, 215, 0))
 
             # Hint Button
-            hintButton = Button(pos=(700, 120),text_input="?",font=self.get_font(20),base_color=(255, 255, 255),hovering_color=(0, 255, 0))
+            hintButton = Button(pos=(700, 120),text_input="?",font=self.get_font(20),base_color=(255, 255, 255),hovering_color=(255, 215, 0))
 
             # Quit Button
             quitButton = Button(pos=(1200, 40),text_input="X",font=self.get_font(33),base_color=(255, 255, 255),hovering_color=(255, 215, 0))
@@ -147,12 +147,12 @@ class Screens:
             self.Screen.blit(plot_surface_2, (670, 440))
 
             # startText=get_font(33).render("Start",True,(255,255,255))#(255,255,255) white #self, image, pos, text_input, font, base_color, hovering_color young green
-            resetButton = Button(pos=(640, 600),text_input="Start",font=self.get_font(44),base_color=(255, 255, 255),hovering_color=(250, 252, 250))
+            resetButton = Button(pos=(640, 600),text_input="Start",font=self.get_font(44),base_color=(255, 255, 255),hovering_color=(255, 215, 0))
 
             # Quit Button
-            quitButton = Button(pos=(1200, 40),text_input="X",font=self.get_font(33),base_color=(255, 255, 255),hovering_color=(250, 252, 250))
+            quitButton = Button(pos=(1200, 40),text_input="X",font=self.get_font(33),base_color=(255, 255, 255),hovering_color=(255, 215, 0))
 
-            
+
             for Buttons in [resetButton,quitButton]:
                 Buttons.change_color(resultMouse_pos)
                 Buttons.update(self.Screen)
@@ -243,6 +243,16 @@ class InputBox:
     def handle_event(self, event,parameter_Input):
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.active = self.rect.collidepoint(event.pos)
+            if self.active:
+                self.color = (219, 48, 122)
+            else:
+                self.color = (255, 255, 255)
+        elif event.type == pygame.MOUSEMOTION:
+            if self.rect.collidepoint(event.pos):
+                self.color = (219, 48, 122)
+            else:
+                self.color = (255, 255, 255)
+        # Handle text input
         elif event.type == pygame.KEYDOWN and self.active:
             if event.key == pygame.K_RETURN:
                 try:
@@ -253,7 +263,14 @@ class InputBox:
             elif event.key == pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
             else:
-                self.text += event.unicode
+                 if (len(self.text) < 7) and (event.key in number_keys):
+                    if event.key == pygame.K_PERIOD and '.' not in self.text:
+                        self.text += '.'
+                    elif event.unicode.isdigit() or event.unicode == '.':
+                        # ตรวจสอบว่ามีจุดทศนิยมแล้วหรือไม่
+                        if event.unicode.isdigit() or (event.unicode == '.' and '.' not in self.text):
+                            self.text += event.unicode
+          
             self.txt_surface = self.font.render(self.text, True, self.color)
 
 
